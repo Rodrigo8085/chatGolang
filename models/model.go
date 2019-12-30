@@ -1,11 +1,11 @@
-package usuariomodel
+package model
 
 import (
 	"database/sql"
 	"strconv"
 	_ "github.com/mattn/go-sqlite3"
 )
-
+//---------------------Usuarios-----------------
 // Estructura con tipos de datos del Json
 type UsuarioJ struct {
 	IDUsuario  int    `json:"id_usuario"`
@@ -105,4 +105,43 @@ func UpdateUsuario(db *sql.DB, nombre string, edad string, email string, contras
 		panic(err2)
 	}
 	return result.RowsAffected()
+}
+//**********************************************Contactos********************************
+// Estructura con tipos de datos del Json
+type ContactoJ struct {
+	IDContacto  		int    	`json:"id_contacto"`
+	IDUsuario   		int		`json:"id_usuario"`
+	IDUsuarioContacto   int 	`json:"id_usuario_contacto"`
+	Nombre      		string 	`json:"nombre"`
+	Telefono 			string 	`json:"telefono"`
+	Direccion 			string	`json:"direccion"`
+}
+
+// Creamos colleción de la esntrada del Json
+type contactoCollection struct {
+	ContactosJ []ContactoJ `json:"contactos"`
+}
+// Obtener usuarios registrados
+func GetContactos(db *sql.DB, id int) contactoCollection {
+	t := strconv.Itoa(id)
+	sql := "SELECT * FROM contacto WHERE id_usuario = "+t
+	rows, err := db.Query(sql)
+	// Si por alguna razon no funcionno la consulta
+	if err != nil {
+		panic(err)
+	}
+	// cierra la conexion y limpia
+	defer rows.Close()
+
+	result := contactoCollection{}
+	for rows.Next() {
+		contactoArray := ContactoJ{}
+		err2 := rows.Scan(&contactoArray.IDContacto, &contactoArray.IDUsuario, &contactoArray.IDUsuarioContacto, &contactoArray.Nombre, &contactoArray.Telefono, &contactoArray.Direccion)
+		// sale si existe algun error
+		if err2 != nil {
+			panic(err2)
+		}
+		result.ContactosJ = append(result.ContactosJ, contactoArray)
+	}
+	return result
 }
