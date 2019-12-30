@@ -121,7 +121,7 @@ type ContactoJ struct {
 type contactoCollection struct {
 	ContactosJ []ContactoJ `json:"contactos"`
 }
-// Obtener usuarios registrados
+// Obtener contactos por usuario
 func GetContactos(db *sql.DB, id int) contactoCollection {
 	t := strconv.Itoa(id)
 	sql := "SELECT * FROM contacto WHERE id_usuario = "+t
@@ -144,4 +144,26 @@ func GetContactos(db *sql.DB, id int) contactoCollection {
 		result.ContactosJ = append(result.ContactosJ, contactoArray)
 	}
 	return result
+}
+//Crear un nuevo contacto 
+func CreateContacto(db *sql.DB, id_usuario int, id_usuario_contacto int, nombre string, telefono string, direccion string) (int64, error) {
+	sql := "INSERT INTO contacto(id_usuario, id_usuario_contacto, nombre, telefono, direccion) VALUES(?,?,?,?,?)"
+
+	// preparar la declaración
+	stmt, err := db.Prepare(sql)
+	// sale si existe algun problema
+	if err != nil {
+		panic(err)
+	}
+	//Asegurar de de limpiar cuando salga del programa
+	defer stmt.Close()
+
+	// Rellena los datos con el array
+	result, err2 := stmt.Exec(id_usuario, id_usuario_contacto, nombre, telefono, direccion)
+	// sale si existe un error
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.RowsAffected()
 }

@@ -9,14 +9,14 @@ import (
 	
 	"github.com/labstack/echo"
 )
-//mostrar usuarios
+//mostrar todos los usuarios
 func UsuariosObtener(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return c.JSON(http.StatusOK, model.GetUsuarios(db))
 
 	}
 }
-//mostrar usuario
+//mostrar al usuario
 func UsuarioObtener(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
@@ -55,10 +55,27 @@ func UsuariosActualizar(db *sql.DB) echo.HandlerFunc {
 	}
 }
 //***************************************contactos ******************************************
-//mostrar contacto
+//mostrar contactos por id de usuario
 func ContactosObtener(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
 		return c.JSON(http.StatusOK, model.GetContactos(db, id))
+	}
+}
+//Crear un contacto por usuario 
+func ContactosCrear(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Nueva instacia del modelo
+		var contacto model.ContactoJ
+		// mapea el Json con el modelo
+		c.Bind(&contacto)
+		// Add a task using our new model
+		guardado, err := model.CreateContacto(db, contacto.IDUsuario, contacto.IDUsuarioContacto, contacto.Nombre, contacto.Telefono, contacto.Direccion)
+		// Return a JSON response if successful
+		if err != nil {
+			return c.JSON(http.StatusUnauthorized, "Error al guardar")
+		} else {
+			return c.JSON(http.StatusCreated, guardado)
+		}
 	}
 }

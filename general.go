@@ -22,6 +22,7 @@ func main() {
 	e.POST("/guardar-usuario", controlador.UsuariosGuardar(db))
 	e.PUT("/actualizar-usuario",controlador.UsuariosActualizar(db))
 	//Apis contacto
+	e.POST("/crear-contacto",controlador.ContactosCrear(db))
 	e.GET("/obtener-contactos/:id", controlador.ContactosObtener(db))
 	// Iniciar el servidor
 	e.Start(":8000")
