@@ -84,7 +84,7 @@ func PutUsuario(db *sql.DB, nombre string, edad string, email string, contraseni
 		panic(err2)
 	}
 
-	return result.RowsAffected()
+	return result.LastInsertId()
 }
 func UpdateUsuario(db *sql.DB, nombre string, edad string, email string, contrasenia string, id_usuario int) (int64, error) {
 	sql := "UPDATE usuario SET nombre = ?, edad = ?, email = ?, contrasenia = ? WHERE id_usuario = ?"
@@ -165,5 +165,98 @@ func CreateContacto(db *sql.DB, id_usuario int, id_usuario_contacto int, nombre 
 		panic(err2)
 	}
 
-	return result.RowsAffected()
+	return result.LastInsertId()
+}
+//*********************************Conversacion****************************************************************
+type ConversacionJ struct {
+	IDConversacion		int    	`json:"id_conversacion"`
+	IDContacto   		int		`json:"id_contacto"`
+	NombreGrupo   		string 	`json:"nombre_grupo"`
+	Administrador      	int 	`json:"administrador"`
+	FechaCreacion 		string 	`json:"fecha_creacion"`
+}
+
+// Creamos colleción de la esntrada del Json
+type conversacionCollection struct {
+	ConversacionesJ []ConversacionJ `json:"conversacion"`
+}
+//Crear una conversación 
+func CreateConversacion(db *sql.DB, id_contacto int, nombre_grupo string, administrador int) (int64, error) {
+	sql := "INSERT INTO conversacion( id_contacto, nombre_grupo, administrador) VALUES(?,?,?)"
+
+	// preparar la declaración
+	stmt, err := db.Prepare(sql)
+	// sale si existe algun problema
+	if err != nil {
+		panic(err)
+	}
+	//Asegurar de de limpiar cuando salga del programa
+	defer stmt.Close()
+
+	// Rellena los datos con el array
+	result, err2 := stmt.Exec(id_contacto, nombre_grupo, administrador)
+	// sale si existe un error
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.LastInsertId()
+}
+//**********************************Mensajes ******************************************
+type MensajeJ struct {
+	IDMensaje		int    	`json:"id_mensaje"`
+	IDConversacion  int		`json:"id_conversacion"`
+	Mensaje   		string 	`json:"mensaje"`
+	IDUsuario      	int 	`json:"id_usuario"`
+	FechaCreacion 	string 	`json:"fecha_creacion"`
+}
+
+// Creamos colleción de la esntrada del Json
+type mensajesCollection struct {
+	MensajesJ []MensajeJ `json:"mensajes"`
+}
+//Crear una conversación 
+func CreateMensaje(db *sql.DB, id_conversacion int, mensaje string, id_usuario int) (int64, error) {
+	sql := "INSERT INTO mensajes( id_conversacion, mensaje, id_usuario) VALUES(?,?,?)"
+
+	// preparar la declaración
+	stmt, err := db.Prepare(sql)
+	// sale si existe algun problema
+	if err != nil {
+		panic(err)
+	}
+	//Asegurar de de limpiar cuando salga del programa
+	defer stmt.Close()
+
+	// Rellena los datos con el array
+	result, err2 := stmt.Exec(id_conversacion, mensaje, id_usuario)
+	// sale si existe un error
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.LastInsertId()
+}
+func GetMensajes(db *sql.DB, id int) mensajesCollection {
+	t := strconv.Itoa(id)
+	sql := "SELECT * FROM mensajes WHERE id_conversacion = "+t+" ORDER BY fecha_creacion ASC"
+	rows, err := db.Query(sql)
+	// Si por alguna razon no funcionno la consulta
+	if err != nil {
+		panic(err)
+	}
+	// cierra la conexion y limpia
+	defer rows.Close()
+
+	result := mensajesCollection{}
+	for rows.Next() {
+		mensajesArray := MensajeJ{}
+		err2 := rows.Scan(&mensajesArray.IDMensaje, &mensajesArray.IDConversacion, &mensajesArray.Mensaje, &mensajesArray.IDUsuario, &mensajesArray.FechaCreacion)
+		// sale si existe algun error
+		if err2 != nil {
+			panic(err2)
+		}
+		result.MensajesJ = append(result.MensajesJ, mensajesArray)
+	}
+	return result
 }

@@ -24,6 +24,14 @@ func main() {
 	//Apis contacto
 	e.POST("/crear-contacto",controlador.ContactosCrear(db))
 	e.GET("/obtener-contactos/:id", controlador.ContactosObtener(db))
+	//Apis conversacion 
+	e.POST("/crear-conversacion", controlador.ConversacionCrear(db))
+	e.GET("/mensajes-conversacion/:id", controlador.ObtenerMensajes(db))
+	//consulta para obtener conversaciones relacionadas 
+	//Apis mensajes 
+	e.POST("/nuevo-mensaje", controlador.InsertarMensaje(db))
+	//Apis Grupos 
+	e.POST("/nuevo-grupo", controlador.GrupoCrear(db))
 	// Iniciar el servidor
 	e.Start(":8000")
 }
@@ -80,6 +88,7 @@ func migrate(db *sql.DB) {
 		id_mensaje INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		id_conversacion INTEGER NOT NULL,
 		mensaje TEXT NOT NULL,
+		id_usuario INTEGER NOT NULL,
 		fecha_creacion TEXT DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (id_conversacion) REFERENCES conversacion (id_conversacion) 
 	);

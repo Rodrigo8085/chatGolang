@@ -79,3 +79,49 @@ func ContactosCrear(db *sql.DB) echo.HandlerFunc {
 		}
 	}
 }
+//**********************************conversacion**********************************************
+//Crear una concersacion 
+func ConversacionCrear(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Nueva instacia del modelo
+		var conversacion model.ConversacionJ
+		// mapea el Json con el modelo
+		c.Bind(&conversacion)
+		// Add a task using our new model
+		guardado, err := model.CreateConversacion(db, conversacion.IDContacto, conversacion.NombreGrupo, conversacion.Administrador)
+		// Return a JSON response if successful
+		if err != nil {
+			return c.JSON(http.StatusUnauthorized, "Error al guardar")
+		} else {
+			return c.JSON(http.StatusCreated, guardado)
+		}
+	}
+}
+func ObtenerMensajes(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, _ := strconv.Atoi(c.Param("id"))
+		return c.JSON(http.StatusOK, model.GetMensajes(db, id))
+	}
+}
+//*********************************mensajes*************************************************
+//Nuevo Mensaje 
+func InsertarMensaje(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Nueva instacia del modelo
+		var mensaje model.MensajeJ
+		// mapea el Json con el modelo
+		c.Bind(&mensaje)
+		// Add a task using our new model
+		guardado, err := model.CreateMensaje(db, mensaje.IDConversacion, mensaje.Mensaje, mensaje.IDUsuario)
+		// Return a JSON response if successful
+		if err != nil {
+			return c.JSON(http.StatusUnauthorized, "Error al guardar")
+		} else {
+			return c.JSON(http.StatusCreated, guardado)
+		}
+	}
+}
+//***************************grupo**************************************************
+func GrupoCrear((db *sql.DB) echo.HandlerFunc {
+	
+}
