@@ -12,8 +12,7 @@ type UsuarioJ struct {
 	Nombre     string `json:"nombre"`
 	Edad       string `json:"edad"`
 	Email      string `json:"email"`
-	Contrasena string `json:"password`
-	PictureURL string `json:"picture_url"`
+	Contrasenia string `json:"contrasenia"`
 }
 
 // Creamos colleción de la esntrada del Json
@@ -35,7 +34,7 @@ func GetUsuario(db *sql.DB) usuarioCollection {
 	result := usuarioCollection{}
 	for rows.Next() {
 		usuarioArray := UsuarioJ{}
-		err2 := rows.Scan(&usuarioArray.IDUsuario, &usuarioArray.Nombre, &usuarioArray.Edad, &usuarioArray.Email, &usuarioArray.Contrasena, &usuarioArray.PictureURL)
+		err2 := rows.Scan(&usuarioArray.IDUsuario, &usuarioArray.Nombre, &usuarioArray.Edad, &usuarioArray.Email, &usuarioArray.Contrasenia)
 		// sale si existe algun error
 		if err2 != nil {
 			panic(err2)
@@ -44,8 +43,8 @@ func GetUsuario(db *sql.DB) usuarioCollection {
 	}
 	return result
 }
-func PutUsuario(db *sql.DB, nombre string, edad string, email string, password string, picture_url string) (int64, error) {
-	sql := "INSERT INTO usuario(nombre, edad, email, password, picture_url) VALUES(?,?,?,?,?)"
+func PutUsuario(db *sql.DB, nombre string, edad string, email string, contrasenia string) (int64, error) {
+	sql := "INSERT INTO usuario(nombre, edad, email, contrasenia) VALUES(?,?,?,?)"
 
 	// preparar la declaración
 	stmt, err := db.Prepare(sql)
@@ -57,11 +56,32 @@ func PutUsuario(db *sql.DB, nombre string, edad string, email string, password s
 	defer stmt.Close()
 
 	// Rellena los datos con el array
-	result, err2 := stmt.Exec(nombre, edad, email, password, picture_url)
+	result, err2 := stmt.Exec(nombre, edad, email, contrasenia)
 	// sale si existe un error
 	if err2 != nil {
 		panic(err2)
 	}
 
-	return result.LastInsertId()
+	return result.RowsAffected()
+}
+func UpdateUsuario(db *sql.DB, nombre string, edad string, email string, contrasenia string, id_usuario int) (int64, error) {
+	sql := "UPDATE usuario SET nombre = ?, edad = ?, email = ?, contrasenia = ? WHERE id_usuario = ?"
+
+	// preparar la declaración
+	stmt, err := db.Prepare(sql)
+	// sale si existe algun problema
+	if err != nil {
+		panic(err)
+	}
+	//Asegurar de de limpiar cuando salga del programa
+	defer stmt.Close()
+
+	// Rellena los datos con el array
+	result, err2 := stmt.Exec(nombre, edad, email, contrasenia,id_usuario)
+	// sale si existe un error
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.RowsAffected()
 }

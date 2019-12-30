@@ -16,7 +16,8 @@ func main() {
 
 	e.File("/", "public/index.html")
 	e.GET("/obtener", usuarioapi.UsuariosObtener(db))
-	e.PUT("/guardar-usuario", usuarioapi.UsuariosGuardar(db))
+	e.POST("/guardar-usuario", usuarioapi.UsuariosGuardar(db))
+	e.PUT("/actualizar-usuario",usuarioapi.UsuariosActualizar(db))
 	//e.DELETE("/tasks/:id", handlers.DeleteTask(db))
 	// Iniciar el servidor
 	e.Start(":8000")
@@ -43,8 +44,7 @@ func migrate(db *sql.DB) {
 		nombre TEXT NOT NULL,
 		edad TEXT,
 		email TEXT NOT NULL UNIQUE,
-		password TEXT NOT NULL,
-		picture_url BLOB
+		contrasenia TEXT NOT NULL
 	);
 	CREATE TABLE IF NOT EXISTS contacto(
 		id_contacto INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -67,7 +67,7 @@ func migrate(db *sql.DB) {
 		id_contacto INTEGER,
 		nombre_grupo TEXT,
 		administrador INTEGER NOT NULL, 
-		fecha_creacion TEXT NOT NULL,
+		fecha_creacion TEXT DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (id_contacto) REFERENCES contacto (id_contacto),
 		FOREIGN KEY (nombre_grupo) REFERENCES grupo (nombre_grupo)
 	);
@@ -75,6 +75,7 @@ func migrate(db *sql.DB) {
 		id_mensaje INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		id_conversacion INTEGER NOT NULL,
 		mensaje TEXT NOT NULL,
+		fecha_creacion TEXT DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (id_conversacion) REFERENCES conversacion (id_conversacion) 
 	);
     `
