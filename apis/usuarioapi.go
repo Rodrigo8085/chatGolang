@@ -5,16 +5,23 @@ import (
 	"database/sql"
 	"chatGolang/models"
 	"net/http"
-
+	"strconv"
+	
 	"github.com/labstack/echo"
 )
 //mostrar usuarios
 func UsuariosObtener(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, usuariomodel.GetUsuario(db))
+		return c.JSON(http.StatusOK, usuariomodel.GetUsuarios(db))
 
 	}
-	
+}
+func UsuarioObtener(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, _ := strconv.Atoi(c.Param("id"))
+		actualizado := usuariomodel.GetUsuario(db, id)
+			return c.JSON(http.StatusOK, actualizado)
+	}
 }
 // Registrar un usuario
 func UsuariosGuardar(db *sql.DB) echo.HandlerFunc {
@@ -27,8 +34,7 @@ func UsuariosGuardar(db *sql.DB) echo.HandlerFunc {
 		guardado, err := usuariomodel.PutUsuario(db, usuario.Nombre, usuario.Edad, usuario.Email, usuario.Contrasenia)
 		// Return a JSON response if successful
 		if err != nil {
-			//return err
-			return c.JSON(http.StatusUnauthorized, err)
+			return c.JSON(http.StatusUnauthorized, "Error al guardar")
 		} else {
 			return c.JSON(http.StatusCreated, guardado)
 		}
@@ -44,7 +50,7 @@ func UsuariosActualizar(db *sql.DB) echo.HandlerFunc {
 		if err == nil {
 			return c.JSON(http.StatusOK, actualizado)
 		} else {
-			return err
+			return c.JSON(http.StatusUnauthorized, "Error al actualizar")
 		}
 	}
 }

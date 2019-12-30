@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"chatGolang/apis"
+	"chatGolang/contacto"
 
 	"github.com/labstack/echo"
 	_ "github.com/mattn/go-sqlite3"
@@ -13,12 +14,15 @@ func main() {
 	migrate(db)
 	// Crea instancia de framework Echo
 	e := echo.New()
-
+	//Web page
 	e.File("/", "public/index.html")
-	e.GET("/obtener", usuarioapi.UsuariosObtener(db))
+	//Apis usuarios
+	e.GET("/obtener-usuarios", usuarioapi.UsuariosObtener(db))
+	e.GET("/obtener-usuario/:id", usuarioapi.UsuarioObtener(db))
 	e.POST("/guardar-usuario", usuarioapi.UsuariosGuardar(db))
 	e.PUT("/actualizar-usuario",usuarioapi.UsuariosActualizar(db))
-	//e.DELETE("/tasks/:id", handlers.DeleteTask(db))
+	//Apis contacto
+	e.GET("/obtener-contactos", contactoapi.UsuariosObtener(db))
 	// Iniciar el servidor
 	e.Start(":8000")
 }
