@@ -16,6 +16,8 @@ func main() {
 	e := echo.New()
 	//Web page
 	e.File("/", "public/index.html")
+	//imagen usuario
+
 	//Apis usuarios
 	e.GET("/obtener-usuarios", controlador.UsuariosObtener(db))
 	e.GET("/obtener-usuario/:id", controlador.UsuarioObtener(db))
@@ -23,15 +25,21 @@ func main() {
 	e.PUT("/actualizar-usuario",controlador.UsuariosActualizar(db))
 	//Apis contacto
 	e.POST("/crear-contacto",controlador.ContactosCrear(db))
+	e.PUT("/actualizar-contacto/:id", controlador.ContactosActualizar(db))
 	e.GET("/obtener-contactos/:id", controlador.ContactosObtener(db))
 	//Apis conversacion 
 	e.POST("/crear-conversacion", controlador.ConversacionCrear(db))
 	e.GET("/mensajes-conversacion/:id", controlador.ObtenerMensajes(db))
+	e.GET("/consultar-conversacion-contactos/:id", controlador.ConversacionUsuario(db))
 	//consulta para obtener conversaciones relacionadas 
 	//Apis mensajes 
 	e.POST("/nuevo-mensaje", controlador.InsertarMensaje(db))
+	e.DELETE("eliminar-mensaje/:id", controlador.EliminarMensaje(db))
 	//Apis Grupos 
-	e.POST("/nuevo-grupo", controlador.GrupoCrear(db))
+	e.POST("/nuevo-usuario-grupo", controlador.GrupoCrear(db))
+	e.GET("/consultar-conversacion-grupos/:id", controlador.ConversacionGrupos(db))
+	e.PUT("/actualizar-grupo", controlador.EditarGrupo(db))
+	e.DELETE("/borrar-grupo", controlador.EliminaGrupo(db))
 	// Iniciar el servidor
 	e.Start(":8000")
 }
@@ -64,6 +72,7 @@ func migrate(db *sql.DB) {
 		id_usuario INTEGER NOT NULL,
 		id_usuario_contacto INTEGER NOT NULL,
 		nombre TEXT NOT NULL,
+		apodo TEXT,
 		telefono TEXT,
 		direccion TEXT,
 		FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario),
@@ -91,6 +100,12 @@ func migrate(db *sql.DB) {
 		id_usuario INTEGER NOT NULL,
 		fecha_creacion TEXT DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (id_conversacion) REFERENCES conversacion (id_conversacion) 
+	);
+	CREATE TABLE IF NOT EXISTS foto(
+		id_fotoperfil INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id_usuario INTEGER,
+		mime_type TEXT NOT NULL,
+		foto BLOB
 	);
     `
 
