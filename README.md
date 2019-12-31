@@ -11,7 +11,8 @@ https://drive.google.com/file/d/1iBbNdy2KRDIC5eyrVr5J6K1t-WNc1XNW/view?usp=shari
 -API's implemetadas: 
 https://docs.google.com/spreadsheets/d/1u9YcTf_fUFMtIAbUd5IpBBi9TTkapnkhYB0R2UsxfT8/edit?usp=sharing
 
-
+-API's y JSON's Implementados 
+https://drive.google.com/file/d/1v1oS4gWyIZRzqElex3ejsamBlV3DBEXW/view?usp=sharing
 
 Descripción del problema 
  
