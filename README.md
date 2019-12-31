@@ -1,5 +1,18 @@
 # chatGolang
-vacanteEntropy
+vacante Entropy
+
+-Instancias requeridas:
+"github.com/labstack/echo"
+	_ "github.com/mattn/go-sqlite3"
+
+-Diseño de la solución:
+https://drive.google.com/file/d/1iBbNdy2KRDIC5eyrVr5J6K1t-WNc1XNW/view?usp=sharing
+
+-API's implemetadas: 
+https://docs.google.com/spreadsheets/d/1u9YcTf_fUFMtIAbUd5IpBBi9TTkapnkhYB0R2UsxfT8/edit?usp=sharing
+
+
+
 Descripción del problema 
  
  
