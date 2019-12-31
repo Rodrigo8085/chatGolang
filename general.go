@@ -17,7 +17,8 @@ func main() {
 	//Web page
 	e.File("/", "public/index.html")
 	//imagen usuario
-
+	//e.POST("/guardar-imagen", controlador.upload(db))
+	//e.GET("/obtener-imagen/:id", controlador.getfoto(db))
 	//Apis usuarios
 	e.GET("/obtener-usuarios", controlador.UsuariosObtener(db))
 	e.GET("/obtener-usuario/:id", controlador.UsuarioObtener(db))
@@ -25,7 +26,7 @@ func main() {
 	e.PUT("/actualizar-usuario",controlador.UsuariosActualizar(db))
 	//Apis contacto
 	e.POST("/crear-contacto",controlador.ContactosCrear(db))
-	e.PUT("/actualizar-contacto/:id", controlador.ContactosActualizar(db))
+	e.PUT("/actualizar-contacto", controlador.ContactosActualizar(db))
 	e.GET("/obtener-contactos/:id", controlador.ContactosObtener(db))
 	//Apis conversacion 
 	e.POST("/crear-conversacion", controlador.ConversacionCrear(db))
