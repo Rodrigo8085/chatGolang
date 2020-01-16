@@ -1,9 +1,12 @@
 package main
 
 import (
+	contactos "chatGolang/controllers/contactos"
+	usuarios "chatGolang/controllers/usuarios"
+	conversacion "chatGolang/controllers/conversacion"
+	mensaje "chatGolang/controllers/mensajes"
+	grupos "chatGolang/controllers/grupos"
 	"database/sql"
-	"chatGolang/apis"
-	//"chatGolang/contacto"
 
 	"github.com/labstack/echo"
 	_ "github.com/mattn/go-sqlite3"
@@ -16,31 +19,32 @@ func main() {
 	e := echo.New()
 	//Web page
 	e.File("/", "public/index.html")
-	//imagen usuario
-	//e.POST("/guardar-imagen", controlador.upload(db))
-	//e.GET("/obtener-imagen/:id", controlador.getfoto(db))
 	//Apis usuarios
-	e.GET("/obtener-usuarios", controlador.UsuariosObtener(db))
-	e.GET("/obtener-usuario/:id", controlador.UsuarioObtener(db))
-	e.POST("/guardar-usuario", controlador.UsuariosGuardar(db))
-	e.PUT("/actualizar-usuario",controlador.UsuariosActualizar(db))
+	e.GET("/obtener-usuarios", usuarios.ObtenerTodos(db))
+	e.GET("/obtener-usuario/:id", usuarios.Obtener(db))
+	e.POST("/guardar-usuario", usuarios.Guardar(db))
+	e.PUT("/actualizar-usuario", usuarios.Actualizar(db))
 	//Apis contacto
-	e.POST("/crear-contacto",controlador.ContactosCrear(db))
-	e.PUT("/actualizar-contacto", controlador.ContactosActualizar(db))
-	e.GET("/obtener-contactos/:id", controlador.ContactosObtener(db))
-	//Apis conversacion 
-	e.POST("/crear-conversacion", controlador.ConversacionCrear(db))
-	e.GET("/mensajes-conversacion/:id", controlador.ObtenerMensajes(db))
-	e.GET("/consultar-conversacion-contactos/:id", controlador.ConversacionUsuario(db))
-	//consulta para obtener conversaciones relacionadas 
-	//Apis mensajes 
-	e.POST("/nuevo-mensaje", controlador.InsertarMensaje(db))
-	e.DELETE("eliminar-mensaje/:id", controlador.EliminarMensaje(db))
-	//Apis Grupos 
-	e.POST("/nuevo-usuario-grupo", controlador.GrupoCrear(db))
-	e.GET("/consultar-conversacion-grupos/:id", controlador.ConversacionGrupos(db))
-	e.PUT("/actualizar-grupo", controlador.EditarGrupo(db))
-	e.DELETE("/borrar-grupo", controlador.EliminaGrupo(db))
+	e.POST("/crear-contacto", contactos.Crear(db))
+	e.PUT("/actualizar-contacto", contactos.Actualizar(db))
+	e.GET("/obtener-contactos/:id", contactos.Obtener(db))
+	//Apis conversacion
+	e.POST("/crear-conversacion", conversacion.Crear(db))
+	e.GET("/mensajes-conversacion/:id", conversacion.ObtenerMensajes(db))
+	e.GET("/consultar-conversacion-contactos/:id", conversacion.ConversacionUsuario(db))
+	//Apis mensajes
+	e.POST("/nuevo-mensaje", mensaje.Insertar(db))
+	e.DELETE("eliminar-mensaje/:id", mensaje.Eliminar(db))
+	//Apis Grupos
+	e.POST("/nuevo-usuario-grupo", grupos.Crear(db))
+	e.GET("/consultar-conversacion-grupos/:id", grupos.Conversacion(db))
+	e.PUT("/actualizar-grupo", grupos.Editar(db))
+	e.DELETE("/borrar-grupo", grupos.Elimina(db))
+	//imagen usuario
+	/*
+	e.POST("/guardar-imagen", controlador.upload(db))
+	e.GET("/obtener-imagen/:id", controlador.getfoto(db))
+	*/
 	// Iniciar el servidor
 	e.Start(":8000")
 }
@@ -111,7 +115,7 @@ func migrate(db *sql.DB) {
     `
 
 	_, err := db.Exec(sql)
-	// Si hay alguna falla no retorna nada
+	// Si hay alguna falla no retorna el error en consola 
 	if err != nil {
 		panic(err)
 	}
