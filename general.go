@@ -1,54 +1,17 @@
 package main
 
 import (
-	contactos "chatGolang/controllers/contactos"
-	usuarios "chatGolang/controllers/usuarios"
-	conversacion "chatGolang/controllers/conversacion"
-	mensaje "chatGolang/controllers/mensajes"
-	grupos "chatGolang/controllers/grupos"
+	controller "chatGolang/controllers"
 	"database/sql"
-
-	"github.com/labstack/echo"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	db := initDB("chat.db")
+	db := inicioBD("chat.db")
 	migrate(db)
-	// Crea instancia de framework Echo
-	e := echo.New()
-	//Web page
-	e.File("/", "public/index.html")
-	//Apis usuarios
-	e.GET("/obtener-usuarios", usuarios.ObtenerTodos(db))
-	e.GET("/obtener-usuario/:id", usuarios.Obtener(db))
-	e.POST("/guardar-usuario", usuarios.Guardar(db))
-	e.PUT("/actualizar-usuario", usuarios.Actualizar(db))
-	//Apis contacto
-	e.POST("/crear-contacto", contactos.Crear(db))
-	e.PUT("/actualizar-contacto", contactos.Actualizar(db))
-	e.GET("/obtener-contactos/:id", contactos.Obtener(db))
-	//Apis conversacion
-	e.POST("/crear-conversacion", conversacion.Crear(db))
-	e.GET("/mensajes-conversacion/:id", conversacion.ObtenerMensajes(db))
-	e.GET("/consultar-conversacion-contactos/:id", conversacion.ConversacionUsuario(db))
-	//Apis mensajes
-	e.POST("/nuevo-mensaje", mensaje.Insertar(db))
-	e.DELETE("eliminar-mensaje/:id", mensaje.Eliminar(db))
-	//Apis Grupos
-	e.POST("/nuevo-usuario-grupo", grupos.Crear(db))
-	e.GET("/consultar-conversacion-grupos/:id", grupos.Conversacion(db))
-	e.PUT("/actualizar-grupo", grupos.Editar(db))
-	e.DELETE("/borrar-grupo", grupos.Elimina(db))
-	//imagen usuario
-	/*
-	e.POST("/guardar-imagen", controlador.upload(db))
-	e.GET("/obtener-imagen/:id", controlador.getfoto(db))
-	*/
-	// Iniciar el servidor
-	e.Start(":8000")
+	controller.Endpoints(db)
 }
-func initDB(filepath string) *sql.DB {
+func inicioBD(filepath string) *sql.DB {
 	db, err := sql.Open("sqlite3", filepath)
 
 	// Control de errores de db

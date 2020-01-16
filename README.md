@@ -24,3 +24,11 @@ https://docs.google.com/spreadsheets/d/1u9YcTf_fUFMtIAbUd5IpBBi9TTkapnkhYB0R2Usx
 
 -API's y JSON's Implementados: (herramienta https://insomnia.rest/)
 https://drive.google.com/file/d/1v1oS4gWyIZRzqElex3ejsamBlV3DBEXW/view?usp=sharing
+
+Mejoras:
+**no se separo de la mejor forma el proyecto, en main dejo los endpoints lo cual hace mas dificil de leer el documento principal. Lo mejor hubiera sido dentro del paquete de la API hacer un archivo o bien otro paquete con las rutas del servidor aparte de separar el codigo con asteriscos (es mejor crear nuevos archivos).
+Completado 
+** Por otro lado no hay pruebas unitarias, ni de los modelos ni de los endpoints lo cual está dentro de las buenas practicas para hacer software
+
+**nomenclatura de las funciones en el proyecto no es uniforme ya que hay partes en donde el codigo esta en ingles y otras en español, incluso se combinan por ejemplo en la funcion "CreateGrupo" . Eso perjudica la facilidad de entender el codigo, cosa que es fundamental cuando se trabaja en equipos.
+Completado
