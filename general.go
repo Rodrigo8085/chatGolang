@@ -1,7 +1,7 @@
 package main
 
 import (
-	controller "chatGolang/controllers"
+	controllers "chatGolang/controllers"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	db := inicioBD("chat.db")
 	migrate(db)
-	controller.Endpoints(db)
+	controllers.Endpoints(db)
 }
 func inicioBD(filepath string) *sql.DB {
 	db, err := sql.Open("sqlite3", filepath)
